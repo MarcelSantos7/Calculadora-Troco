@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Troco</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        .calculator {
+            background-color: gray;
+            width: 300px;
+            margin: 0 auto;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .input-label {
+            font-weight: bold;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 5px;
+            margin: 10px 0;
+            border: 1px solid white;
+            border-radius: 5px;
+            background-color: black;
+            color: white;
+        }
+
+        .calculate-button {
+            background-color: white;
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .result {
+            margin-top: 20px;
+            text-align: left;
+            white-space: pre-line;
+        }
+    </style>
+</head>
+<body>
+    <h1>Calculadora de Troco</h1>
+    <div class="calculator">
+        <form action="#">
+            <div>
+                <label class="input-label">Valor da Compra:</label>
+                <input class="input-field" type="number" id="valor-compra" step="0.01" onkeypress="return handleEnter(event, 'valor-pago')">
+            </div>
+            <div>
+                <label class="input-label">Valor Pago pelo Cliente:</label>
+                <input class="input-field" type="number" id="valor-pago" step="0.01" onkeypress="return handleEnter(event, 'calculate-button')">
+            </div>
+            <button class="calculate-button" type="button" onclick="calcularTroco()">Calcular Troco</button>
+        </form>
+        <div class="result" id="troco-result"></div>
+    </div>
+
+    <script>
+        function handleEnter(event, nextField) {
+            if (event.key === "Enter") {
+                if (nextField === 'calculate-button') {
+                    calcularTroco();
+                } else {
+                    document.getElementById(nextField).focus();
+                }
+                return false;
+            }
+            return true;
+        }
+
+        function calcularTroco() {
+            var valorCompra = parseFloat(document.getElementById("valor-compra").value);
+            var valorPago = parseFloat(document.getElementById("valor-pago").value);
+            var troco = valorPago - valorCompra;
+
+            var notas = [200, 100, 50, 20, 10, 5, 2];
+            var moedas = [1, 0.5, 0.25, 0.1, 0.05, 0.01];
+            var trocoResult = "Troco: " + troco.toFixed(2) + "\n";
+
+            for (var i = 0; i < notas.length; i++) {
+                var quantidade = Math.floor(troco / notas[i]);
+                troco %= notas[i];
+                if (quantidade > 0) {
+                    trocoResult += quantidade + " notas de " + notas[i] + "\n";
+                }
+            }
+
+            for (var i = 0; i < moedas.length; i++) {
+                var quantidade = Math.floor(troco / moedas[i]);
+                troco = (troco % moedas[i]).toFixed(2);
+                if (quantidade > 0) {
+                    trocoResult += quantidade + " moedas de " + (moedas[i] * 100) + " centavos\n";
+                }
+            }
+
+            document.getElementById("troco-result").innerHTML = trocoResult;
+        }
+    </script>
+</body>
+</html>
